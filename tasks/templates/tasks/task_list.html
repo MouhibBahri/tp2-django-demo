@@ -8,6 +8,7 @@
     <h1>Taskboard</h1>
 
     <form method="post">
+        {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Add task</button>
     </form>
@@ -17,6 +18,7 @@
             <li>
                 {% if task.done %}<s>{{ task.title }}</s>{% else %}{{ task.title }}{% endif %}
                 <form method="post" action="{% url 'task_toggle' task.pk %}" style="display:inline">
+                    {% csrf_token %}
                     <button type="submit">{% if task.done %}Undo{% else %}Done{% endif %}</button>
                 </form>
             </li>
