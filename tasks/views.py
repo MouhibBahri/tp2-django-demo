@@ -14,7 +14,7 @@ def task_list(request):
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-            fingerprint = hashlib.md5(form.cleaned_data['title'].encode()).hexdigest()
+            fingerprint = hashlib.sha256(form.cleaned_data['title'].encode()).hexdigest()
             logger.info("Created task with fingerprint %s", fingerprint)
             return redirect('task_list')
     else:
