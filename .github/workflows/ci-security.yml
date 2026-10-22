@@ -73,13 +73,11 @@ jobs:
           docker logs taskboard-ci
           exit 1
       - name: DAST - OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.15.0
-        with:
-          target: 'http://localhost:8000'
-          rules_file_name: '.zap/rules.tsv'
-          allow_issue_writing: false
-          fail_action: true
-          cmd_options: '-I'
+        run: |
+          docker run --rm --network host \
+            -v ${{ github.workspace }}/.zap:/zap/wrk/zap -w /zap/wrk \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py -t http://localhost:8000 -c zap/rules.tsv -I
       - name: Stop container
         if: always()
         run: docker stop taskboard-ci || true
