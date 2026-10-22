@@ -1,7 +1,12 @@
+import hashlib
+import logging
+
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import TaskForm
 from .models import Task
+
+logger = logging.getLogger(__name__)
 
 
 def task_list(request):
@@ -9,6 +14,8 @@ def task_list(request):
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
+            fingerprint = hashlib.sha256(form.cleaned_data['title'].encode()).hexdigest()
+            logger.info("Created task with fingerprint %s", fingerprint)
             return redirect('task_list')
     else:
         form = TaskForm()
